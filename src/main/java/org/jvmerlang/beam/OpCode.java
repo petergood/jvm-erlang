@@ -1,5 +1,8 @@
 package org.jvmerlang.beam;
 
+import lombok.Getter;
+
+@Getter
 public enum OpCode {
     op_label(1, 1),
     op_func_info(2, 3),
@@ -185,11 +188,11 @@ public enum OpCode {
     op_bs_match(182, 3),
     op_executable_line(183, 1);
 
-    int id;
-    int arity;
+    private final short id;
+    private final int arity;
 
     OpCode(int id, int arity) {
-        this.id = id;
+        this.id = (short) id;
         this.arity = arity;
     }
 }

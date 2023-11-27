@@ -17,8 +17,10 @@ public class BeamReader {
     private final TermDecoder termDecoder;
 
     public BeamReader(InputStream in) {
-        this.in = new BufferedInputStream(in);
-        this.termDecoder = new TermDecoder(in);
+        InputStream bufferedStream = new BufferedInputStream(in);
+
+        this.in = bufferedStream;
+        this.termDecoder = new TermDecoder(bufferedStream);
     }
 
     public short readByte() throws IOException {
@@ -53,6 +55,10 @@ public class BeamReader {
     public void endReadingChunk(int chunkSize) throws IOException {
         in.reset();
         skipChunk(chunkSize);
+    }
+
+    public Term getNextTerm() throws IOException {
+        return termDecoder.getNextTerm();
     }
 
     private byte[] readBytesSafe(int num) throws IOException {

@@ -1,13 +1,9 @@
 package org.jvmerlang.beam.chunk;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jvmerlang.beam.BeamModule;
-import org.jvmerlang.beam.BeamReader;
-import org.jvmerlang.beam.OpCode;
-import org.jvmerlang.beam.OpCodeProvider;
+import org.jvmerlang.beam.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Slf4j
 public class CodeChunkHandler implements ChunkHandler {
@@ -19,8 +15,29 @@ public class CodeChunkHandler implements ChunkHandler {
 
     @Override
     public void handleChunk(int chunkSize, BeamReader reader, BeamModule.Builder beamModuleBuilder) throws IOException {
-        reader.skipChunk(chunkSize);
-//        short opCodeByte = reader.readByte();
-//        OpCode opCode = opCodeProvider.getByCode(opCodeByte);
+        int subSize = reader.readInt();
+        int instructionSet = reader.readInt();
+        int opCodeMax = reader.readInt();
+        int labelCount = reader.readInt();
+        int functionCount = reader.readInt();
+
+//        int toSkip = subSize * 2 - 4 * 32;
+//        reader.skip(toSkip);
+
+//        while (true) {
+        for (int j = 0; j < 2; j++) {
+            short code = reader.readByte();
+
+            log.info("op: {}", code);
+
+            OpCode opCode = opCodeProvider.getByCode(code);
+            log.info("opcode: {}", opCode);
+
+            for (int i = 0; i < opCode.getArity(); i++) {
+                Term term = reader.getNextTerm();
+                log.info("term: {}", term);
+            }
+//        }
+        }
     }
 }

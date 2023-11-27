@@ -20,9 +20,11 @@ public class ChunkHandlerDispatcher {
 
     public void handleChunk(ChunkType type, int chunkSize, BeamReader reader, BeamModule.Builder beamModuleBuilder) throws IOException {
         if (!this.chunkHandlers.containsKey(type)) {
-            log.info("Ignoring chunk type " + type);
+            log.info("Ignoring chunk type {}", type);
             return;
         }
+
+        log.info("Handling chunk type {}", type);
 
         this.chunkHandlers.get(type).handleChunk(chunkSize, reader, beamModuleBuilder);
     }

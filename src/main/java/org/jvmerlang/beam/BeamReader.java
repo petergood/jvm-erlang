@@ -3,15 +3,23 @@ package org.jvmerlang.beam;
 import lombok.RequiredArgsConstructor;
 import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-@RequiredArgsConstructor
 public class BeamReader {
     private static final int CHUNK_ALIGN = 4;
 
     private final InputStream in;
+    private final TermDecoder termDecoder;
+
+    public BeamReader(InputStream in) {
+        this.in = new BufferedInputStream(in);
+        this.termDecoder = new TermDecoder(in);
+    }
 
     public short readByte() throws IOException {
         return (short) ((short) readBytesSafe(1)[0]);
@@ -25,12 +33,26 @@ public class BeamReader {
         return new String(readBytesSafe(4));
     }
 
+    public String readUtf8String(int num) throws IOException {
+        byte[] bytes = readBytesSafe(num);
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
     public int getAvailableBytes() throws IOException {
         return in.available();
     }
 
     public void skipChunk(int chunkSize) throws IOException {
         in.skip(CHUNK_ALIGN * ((chunkSize + CHUNK_ALIGN - 1) / CHUNK_ALIGN));
+    }
+
+    public void beginReadingChunk(int chunkSize) {
+        in.mark(chunkSize);
+    }
+
+    public void endReadingChunk(int chunkSize) throws IOException {
+        in.reset();
+        skipChunk(chunkSize);
     }
 
     private byte[] readBytesSafe(int num) throws IOException {

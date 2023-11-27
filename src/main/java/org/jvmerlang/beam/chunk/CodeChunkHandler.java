@@ -18,8 +18,9 @@ public class CodeChunkHandler implements ChunkHandler {
     }
 
     @Override
-    public void handleChunk(int chunkSize, BeamReader reader, BeamModule beamModule) throws IOException {
-        short opCodeByte = reader.readByte();
-        OpCode opCode = opCodeProvider.getByCode(opCodeByte);
+    public void handleChunk(int chunkSize, BeamReader reader, BeamModule.Builder beamModuleBuilder) throws IOException {
+        reader.skipChunk(chunkSize);
+//        short opCodeByte = reader.readByte();
+//        OpCode opCode = opCodeProvider.getByCode(opCodeByte);
     }
 }

@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface ChunkHandler {
-    void handleChunk(int chunkSize, BeamReader reader, BeamModule beamModule) throws IOException;
+    void handleChunk(int chunkSize, BeamReader reader, BeamModule.Builder beamModuleBuilder) throws IOException;
 }

@@ -19,7 +19,7 @@ public class BeamDecoder {
         this.reader = new BeamReader(in);
     }
 
-    public void read() throws IOException {
+    public BeamModule read() throws IOException {
         String iffContainerHeader = reader.readString();
 
         if (!iffContainerHeader.equals(IFF_HEADER)) {
@@ -38,20 +38,23 @@ public class BeamDecoder {
             throw new CorruptedBeamFileException("Invalid BEAM header");
         }
 
-        BeamModule module = new BeamModule();
+        BeamModule.Builder moduleBuilder = new BeamModule.Builder();
 
         while (reader.getAvailableBytes() > 0) {
             String chunkName = reader.readString();
 
             try {
                 ChunkType chunkType = ChunkType.valueOf(chunkName);
-
                 int chunkSize = reader.readInt();
 
-                chunkHandlerDispatcher.handleChunk(chunkType, chunkSize, reader, module);
+                reader.beginReadingChunk(chunkSize);
+                chunkHandlerDispatcher.handleChunk(chunkType, chunkSize, reader, moduleBuilder);
+                reader.endReadingChunk(chunkSize);
             } catch (IllegalArgumentException ex) {
                 throw new CorruptedBeamFileException(String.format("Invalid chunk type %s", chunkName));
             }
         }
+
+        return moduleBuilder.build();
     }
 }

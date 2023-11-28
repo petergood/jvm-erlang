@@ -16,6 +16,7 @@ public class BeamModule {
     private final List<EString> strings;
     private final List<EFunction> imports;
     private final List<EFunction> localFunctions;
+    private final ECode code;
 
     public static class Builder {
         private List<EAtom> atomMap;
@@ -24,6 +25,7 @@ public class BeamModule {
         private List<EString> strings;
         private List<EFunction> imports;
         private List<EFunction> localFunctions;
+        private ECode code;
 
         public Builder setAtomMap(List<EAtom> atoms) {
             // There can only be one atom map per module
@@ -86,6 +88,16 @@ public class BeamModule {
             return this;
         }
 
+        public Builder setCode(ECode code) {
+            if (this.code != null) {
+                throw new IllegalArgumentException("Code already set");
+            }
+
+            this.code = code;
+
+            return this;
+        }
+
         public BeamModule build() {
             return new BeamModule(
               atomMap,
@@ -93,7 +105,8 @@ public class BeamModule {
               exports,
               strings,
               imports,
-              localFunctions
+              localFunctions,
+              code
             );
         }
     }

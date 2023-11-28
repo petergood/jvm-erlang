@@ -49,8 +49,6 @@ public class BeamDecoder {
                 ChunkType chunkType = ChunkType.valueOf(chunkName);
                 int chunkSize = reader.readInt();
 
-                log.info("ct {} {}", chunkType, chunkSize);
-
                 reader.beginReadingChunk(chunkSize);
                 chunkHandlerDispatcher.handleChunk(chunkType, chunkSize, reader, moduleBuilder);
                 reader.endReadingChunk(chunkSize);

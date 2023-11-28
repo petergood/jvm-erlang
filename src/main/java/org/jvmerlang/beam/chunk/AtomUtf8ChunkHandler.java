@@ -29,6 +29,5 @@ public class AtomUtf8ChunkHandler implements ChunkHandler {
         }
 
         beamModuleBuilder.setAtomMap(atoms);
-        log.info("{}", atoms);
     }
 }

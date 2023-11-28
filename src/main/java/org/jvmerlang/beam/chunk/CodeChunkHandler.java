@@ -2,8 +2,11 @@ package org.jvmerlang.beam.chunk;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jvmerlang.beam.*;
+import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class CodeChunkHandler implements ChunkHandler {
@@ -18,25 +21,52 @@ public class CodeChunkHandler implements ChunkHandler {
         int subSize = reader.readInt();
         int instructionSet = reader.readInt();
         int opCodeMax = reader.readInt();
-        int labelCount = reader.readInt();
-        int functionCount = reader.readInt();
+        int expectedLabelCount = reader.readInt();
+        int expectedFunctionCount = reader.readInt();
+
+        int functionCount = 0;
+        int labelCount = 0;
+
+        List<EInstruction> instructions = new ArrayList<>();
 
         reader.beginByteTracking(chunkSize - subSize);
 
         while (!reader.isTrackingFinished()) {
             short code = reader.readByte();
 
-            log.info("op: {}", code);
-
             OpCode opCode = opCodeProvider.getByCode(code);
-            log.info("opcode: {}", opCode);
 
+            if (opCode.equals(OpCode.op_int_code_end)) {
+                break;
+            }
+
+            if (opCode.equals(OpCode.op_func_info)) {
+                functionCount++;
+            }
+
+            if (opCode.equals(OpCode.op_label)) {
+                labelCount++;
+            }
+
+            List<Term> terms = new ArrayList<>();
             for (int i = 0; i < opCode.getArity(); i++) {
                 Term term = reader.getNextTerm();
-                log.info("term: {}", term);
+                terms.add(term);
             }
+
+            instructions.add(new EInstruction(opCode, terms));
+        }
+
+        if (functionCount != expectedFunctionCount) {
+            throw new CorruptedBeamFileException(String.format("Expected %d functions, found %d", expectedFunctionCount, functionCount));
+        }
+
+        if (labelCount != expectedLabelCount - 1) {
+            throw new CorruptedBeamFileException(String.format("Expected %d labels, found %d", expectedLabelCount, labelCount));
         }
 
         reader.endByteTracking();
+
+        beamModuleBuilder.setCode(new ECode(instructions));
     }
 }

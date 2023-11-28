@@ -2,7 +2,7 @@ package org.jvmerlang.beam.chunk;
 
 import org.jvmerlang.beam.BeamModule;
 import org.jvmerlang.beam.BeamReader;
-import org.jvmerlang.beam.ELiteral;
+import org.jvmerlang.beam.type.ELiteral;
 import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 
 import java.io.ByteArrayInputStream;

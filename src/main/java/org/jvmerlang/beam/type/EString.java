@@ -1,4 +1,4 @@
-package org.jvmerlang.beam;
+package org.jvmerlang.beam.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

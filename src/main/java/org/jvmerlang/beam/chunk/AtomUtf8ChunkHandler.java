@@ -3,7 +3,7 @@ package org.jvmerlang.beam.chunk;
 import lombok.extern.slf4j.Slf4j;
 import org.jvmerlang.beam.BeamModule;
 import org.jvmerlang.beam.BeamReader;
-import org.jvmerlang.beam.EAtom;
+import org.jvmerlang.beam.type.EAtom;
 import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 
 import java.io.IOException;

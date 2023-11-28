@@ -19,7 +19,8 @@ public class ChunkHandlerDispatcher {
           ChunkType.ExpT, new ExportTableChunkHandler(),
           ChunkType.StrT, new StringTableChunkHandler(),
           ChunkType.ImpT, new ImportTableChunkHandler(),
-          ChunkType.LocT, new LocalTableChunkHandler()
+          ChunkType.LocT, new LocalTableChunkHandler(),
+          ChunkType.Meta, new MetaChunkHandler()
         );
     }
 

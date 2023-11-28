@@ -3,7 +3,7 @@ package org.jvmerlang.beam.chunk;
 import lombok.extern.slf4j.Slf4j;
 import org.jvmerlang.beam.BeamModule;
 import org.jvmerlang.beam.BeamReader;
-import org.jvmerlang.beam.EString;
+import org.jvmerlang.beam.type.EString;
 
 import java.io.IOException;
 import java.util.List;

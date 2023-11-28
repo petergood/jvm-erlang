@@ -1,8 +1,7 @@
 package org.jvmerlang.beam.chunk;
 
-import org.jvmerlang.beam.BeamModule;
 import org.jvmerlang.beam.BeamReader;
-import org.jvmerlang.beam.EFunction;
+import org.jvmerlang.beam.type.EFunction;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package org.jvmerlang.beam;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jvmerlang.beam.type.*;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class BeamModule {
     private final List<EFunction> imports;
     private final List<EFunction> localFunctions;
     private final ECode code;
+    private final EList metadata;
 
     public static class Builder {
         private List<EAtom> atomMap;
@@ -26,6 +28,7 @@ public class BeamModule {
         private List<EFunction> imports;
         private List<EFunction> localFunctions;
         private ECode code;
+        private EList metadata;
 
         public Builder setAtomMap(List<EAtom> atoms) {
             // There can only be one atom map per module
@@ -98,6 +101,16 @@ public class BeamModule {
             return this;
         }
 
+        public Builder setMetadata(EList metadata) {
+            if (this.metadata != null) {
+                throw new IllegalArgumentException("Metadata already set");
+            }
+
+            this.metadata = metadata;
+
+            return this;
+        }
+
         public BeamModule build() {
             return new BeamModule(
               atomMap,
@@ -106,7 +119,8 @@ public class BeamModule {
               strings,
               imports,
               localFunctions,
-              code
+              code,
+              metadata
             );
         }
     }

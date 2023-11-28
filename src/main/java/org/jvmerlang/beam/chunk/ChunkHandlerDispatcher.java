@@ -13,8 +13,13 @@ public class ChunkHandlerDispatcher {
 
     public ChunkHandlerDispatcher() {
         this.chunkHandlers = Map.of(
-          ChunkType.Code, new CodeChunkHandler(),
-          ChunkType.AtU8, new AtomUtf8ChunkHandler()
+//          ChunkType.Code, new CodeChunkHandler(),
+          ChunkType.AtU8, new AtomUtf8ChunkHandler(),
+          ChunkType.LitT, new LiteralChunkHandler(),
+          ChunkType.ExpT, new ExportTableChunkHandler(),
+          ChunkType.StrT, new StringTableChunkHandler(),
+          ChunkType.ImpT, new ImportTableChunkHandler(),
+          ChunkType.LocT, new LocalTableChunkHandler()
         );
     }
 

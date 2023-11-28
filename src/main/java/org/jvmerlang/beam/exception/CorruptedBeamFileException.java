@@ -7,4 +7,8 @@ public class CorruptedBeamFileException extends RuntimeException {
     public CorruptedBeamFileException(String message) {
         super(message);
     }
+
+    public CorruptedBeamFileException(Throwable cause) {
+        super(cause);
+    }
 }

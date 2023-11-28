@@ -26,9 +26,24 @@ public class TermDecoder {
         int firstByte = in.read();
         int tag = firstByte & 0b111;
 
+        // label: 1
+        // 00010000
+        // 10011001
+
         if (tag == 0b111) {
             // TODO
+
+            // 1010111
+
             log.info("fb {}", firstByte);
+//            throw new UnsupportedOperationException("Extended tags not supported");
+
+            if (((firstByte >> 3) & 0b1010) == 0b1010) {
+                // extended label
+                int next = in.read();
+                log.info("ext label next: {}", next);
+            }
+
             throw new UnsupportedOperationException("Extended tags not supported");
         }
 

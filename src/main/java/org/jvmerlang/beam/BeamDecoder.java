@@ -1,5 +1,6 @@
 package org.jvmerlang.beam;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jvmerlang.beam.chunk.ChunkHandlerDispatcher;
 import org.jvmerlang.beam.chunk.ChunkType;
 import org.jvmerlang.beam.exception.CorruptedBeamFileException;
@@ -7,6 +8,7 @@ import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 public class BeamDecoder {
     private static final String IFF_HEADER = "FOR1";
     private static final String BEAM_HEADER = "BEAM";
@@ -47,11 +49,13 @@ public class BeamDecoder {
                 ChunkType chunkType = ChunkType.valueOf(chunkName);
                 int chunkSize = reader.readInt();
 
+                log.info("ct {} {}", chunkType, chunkSize);
+
                 reader.beginReadingChunk(chunkSize);
                 chunkHandlerDispatcher.handleChunk(chunkType, chunkSize, reader, moduleBuilder);
                 reader.endReadingChunk(chunkSize);
             } catch (IllegalArgumentException ex) {
-                throw new CorruptedBeamFileException(String.format("Invalid chunk type %s", chunkName));
+                throw new CorruptedBeamFileException(ex);
             }
         }
 

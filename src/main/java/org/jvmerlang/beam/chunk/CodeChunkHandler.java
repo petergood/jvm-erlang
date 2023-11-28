@@ -21,11 +21,9 @@ public class CodeChunkHandler implements ChunkHandler {
         int labelCount = reader.readInt();
         int functionCount = reader.readInt();
 
-//        int toSkip = subSize * 2 - 4 * 32;
-//        reader.skip(toSkip);
+        reader.beginByteTracking(chunkSize - subSize);
 
-//        while (true) {
-        for (int j = 0; j < 2; j++) {
+        while (!reader.isTrackingFinished()) {
             short code = reader.readByte();
 
             log.info("op: {}", code);
@@ -37,7 +35,8 @@ public class CodeChunkHandler implements ChunkHandler {
                 Term term = reader.getNextTerm();
                 log.info("term: {}", term);
             }
-//        }
         }
+
+        reader.endByteTracking();
     }
 }

@@ -1,5 +1,6 @@
 package org.jvmerlang.beam.chunk;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jvmerlang.beam.BeamModule;
 import org.jvmerlang.beam.BeamReader;
 import org.jvmerlang.beam.EAtom;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class AtomUtf8ChunkHandler implements ChunkHandler {
     @Override
     public void handleChunk(int chunkSize, BeamReader reader, BeamModule.Builder beamModuleBuilder) throws IOException {
@@ -27,5 +29,6 @@ public class AtomUtf8ChunkHandler implements ChunkHandler {
         }
 
         beamModuleBuilder.setAtomMap(atoms);
+        log.info("{}", atoms);
     }
 }

@@ -1,13 +1,11 @@
 package org.jvmerlang.beam;
 
-import lombok.RequiredArgsConstructor;
 import org.jvmerlang.beam.exception.CorruptedBeamFileException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class BeamReader {
@@ -15,6 +13,7 @@ public class BeamReader {
 
     private final InputStream in;
     private final TermDecoder termDecoder;
+    private ReaderTracker readerTracker;
 
     public BeamReader(InputStream in) {
         InputStream bufferedStream = new BufferedInputStream(in);
@@ -23,8 +22,12 @@ public class BeamReader {
         this.termDecoder = new TermDecoder(bufferedStream);
     }
 
+    public byte[] readBytes(int num) throws IOException {
+        return readBytesSafe(num);
+    }
+
     public short readByte() throws IOException {
-        return (short) ((short) readBytesSafe(1)[0]);
+        return readBytesSafeAsShort(1)[0];
     }
 
     public int readInt() throws IOException {
@@ -61,6 +64,26 @@ public class BeamReader {
         return termDecoder.getNextTerm();
     }
 
+    public void beginByteTracking(int totalSize) {
+        if (this.readerTracker != null) {
+            throw new IllegalStateException("Attempted to start tracking when already in tracking state");
+        }
+
+        this.readerTracker = new ReaderTracker(totalSize);
+    }
+
+    public void endByteTracking() {
+        if (this.readerTracker == null) {
+            throw new IllegalStateException("Attempted to end tracking when no tracking active");
+        }
+
+        this.readerTracker = null;
+    }
+
+    public boolean isTrackingFinished() {
+        return this.readerTracker.hasReachedTarget();
+    }
+
     private byte[] readBytesSafe(int num) throws IOException {
         byte[] bytes = new byte[num];
         int bytesRead = in.read(bytes);
@@ -71,6 +94,21 @@ public class BeamReader {
             );
         }
 
+        if (this.readerTracker != null) {
+            this.readerTracker.increment(bytesRead);
+        }
+
         return bytes;
+    }
+
+    private short[] readBytesSafeAsShort(int num) throws IOException {
+        byte[] bytes = readBytesSafe(num);
+        short[] bytesShort = new short[num];
+
+        for (int i = 0; i < bytes.length; i++) {
+            bytesShort[i] = (short) (bytes[i] & 0xFF);
+        }
+
+        return bytesShort;
     }
 }

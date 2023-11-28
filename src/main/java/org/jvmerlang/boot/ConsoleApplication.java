@@ -9,7 +9,7 @@ import java.io.*;
 @Slf4j
 public class ConsoleApplication {
     public static void main(String[] args) throws IOException {
-        File initialFile = new File("test_module.beam");
+        File initialFile = new File("summer.beam");
 
         try (InputStream targetStream = new FileInputStream(initialFile)) {
             BeamDecoder beamDecoder = new BeamDecoder(targetStream);
